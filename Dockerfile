@@ -1,9 +1,10 @@
 # Stage 1: Build the Nginx image with config files
 FROM nginx:alpine as stage1
 
+RUN rm /etc/nginx/conf.d/deafult.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY iq-dist-3.conf /etc/nginx/conf.d/iq-dist-3.conf
-ADD lets-encrypt /usr/nginx/ssl/let-encrypt
+ADD let-encrypt /usr/nginx/ssl/let-encrypt
 
 # Stage 2: Create a minimal image with the compiled Nginx binary
 FROM nginx:alpine
