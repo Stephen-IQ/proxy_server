@@ -1,5 +1,5 @@
 # Stage 1: Build the Nginx image with config files
-FROM nginx:alpine
+FROM nginx:alpine as stage1
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY iq-dist-3.conf /etc/nginx/conf.d/iq-dist-3.conf
