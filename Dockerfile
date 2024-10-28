@@ -1,24 +1,16 @@
-# This is a standard Dockerfile for building a Go app.
-# It is a multi-stage build: the first stage compiles the Go source into a binary, and
-#   the second stage copies only the binary into an alpine base.
+# Stage 1: Build the Nginx image with config files
+FROM nginx:alpine
 
-# -- Stage 1 -- #
-# Compile the app.
-FROM golang:1.12-alpine as builder
-WORKDIR /app
-# The build context is set to the directory where the repo is cloned.
-# This will copy all files in the repo to /app inside the container.
-# If your app requires the build context to be set to a subdirectory inside the repo, you
-#   can use the source_dir app spec option, see: https://www.digitalocean.com/docs/app-platform/references/app-specification-reference/
-COPY . .
-RUN go build -mod=vendor -o bin/hello
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY iq-dist-3.conf /etc/nginx/conf.d/iq-dist-3.conf
+ADD lets-encrypt /usr/nginx/ssl/let-encrypt
 
-# -- Stage 2 -- #
-# Create the final environment with the compiled binary.
-FROM alpine
-# Install any required dependencies.
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-# Copy the binary from the builder stage and set it as the default command.
-COPY --from=builder /app/bin/hello /usr/local/bin/
-CMD ["hello"]
+# Stage 2: Create a minimal image with the compiled Nginx binary
+FROM nginx:alpine
+
+COPY --from=stage1 /usr/sbin/nginx /usr/sbin/nginx
+COPY --from=stage1 /etc/nginx /etc/nginx
+
+EXPOSE 80 443
+
+CMD ["nginx", "-g", "daemon off;"]
