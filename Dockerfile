@@ -2,7 +2,7 @@
 FROM nginx:alpine as stage1
 
 RUN apk add certbot certbot-nginx
-RUN apk add python3 python3-dev py3-pip build-base libressl-dev musl-dev libffi-dev rust cargo
+RUN apk add python3 python3-dev py3-pip build-base libressl-dev musl-dev libffi-dev rust cargo python3-certbot-dns-digitalocean
 
 # Create a virtual environment
 WORKDIR /app
@@ -22,7 +22,7 @@ COPY iq-dist-4.conf /etc/nginx/conf.d/iq-dist-4.conf
 RUN mkdir -p /var/www/html
 
 # Obtain Let's Encrypt certificate
-RUN certbot certonly --webroot -w /var/www/html -d iq-dist-4.com --agree-tos --non-interactive --email stephen@incquery.com
+RUN certbot certonly --dns-digitalocean --dns-digitalocean-credentials $TOKEN -d iq-dist-4.com --agree-tos --non-interactive --email stephen@incquery.com
 
 # Stage 2: Create a minimal image with the compiled Nginx binary
 FROM nginx:alpine
