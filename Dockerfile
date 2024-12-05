@@ -18,12 +18,16 @@ RUN . venv/bin/activate && \
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY iq-dist-3.conf /etc/nginx/conf.d/iq-dist-3.conf
 
+# Obtain Let's Encrypt certificate
+RUN certbot certonly --webroot -w /var/www/html -d $DOMAIN_NAME --agree-tos --non-interactive --email $EMAIL
+
 # Stage 2: Create a minimal image with the compiled Nginx binary
 FROM nginx:alpine
 
 COPY --from=stage1 /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=stage1 /etc/nginx /etc/nginx
 COPY --from=stage1 /app/venv /app/venv
+COPY --from=stage1 /etc/letsencrypt /etc/letsencrypt
 
 EXPOSE 80 443
 
