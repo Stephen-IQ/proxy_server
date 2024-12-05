@@ -18,6 +18,9 @@ RUN . venv/bin/activate && \
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY iq-dist-3.conf /etc/nginx/conf.d/iq-dist-3.conf
 
+#Make directory to store certs
+RUN mkdir -p /var/www/html
+
 # Obtain Let's Encrypt certificate
 RUN certbot certonly --webroot -w /var/www/html -d $DOMAIN_NAME --agree-tos --non-interactive --email $EMAIL
 
