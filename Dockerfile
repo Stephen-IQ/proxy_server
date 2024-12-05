@@ -23,7 +23,7 @@ COPY iq-dist-4.conf /etc/nginx/conf.d/iq-dist-4.conf
 RUN mkdir -p /var/www/html
 
 # Obtain Let's Encrypt certificate
-RUN certbot certonly --dns-digitalocean --dns-digitalocean-credentials $TOKEN -d iq-dist-4.com --agree-tos --non-interactive --email stephen@incquery.com
+RUN certbot certonly --dns-digitalocean --dns-digitalocean-credentials "$TOKEN" -d iq-dist-4.com --agree-tos --non-interactive --email stephen@incquery.com
 
 # Stage 2: Create a minimal image with the compiled Nginx binary
 FROM nginx:alpine
