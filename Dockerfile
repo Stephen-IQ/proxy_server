@@ -2,7 +2,7 @@
 FROM nginx:alpine as stage1
 
 RUN apk add certbot certbot-nginx
-RUN apk add python3 python3-dev py3-pip build-base libressl-dev musl-dev libffi-dev rust cargo python3-certbot-dns-digitalocean
+RUN apk add python3 python3-dev py3-pip build-base libressl-dev musl-dev libffi-dev rust cargo
 
 # Create a virtual environment
 WORKDIR /app
@@ -13,7 +13,8 @@ ENV PATH="/app/venv/bin:$PATH"
 # Activate the virtual environment and install dependencies
 RUN . venv/bin/activate && \
     pip install --upgrade pip && \
-    pip install certbot-nginx
+    pip install certbot-nginx && \ 
+    pip install pip certbot-dns-digitalocean
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY iq-dist-4.conf /etc/nginx/conf.d/iq-dist-4.conf
