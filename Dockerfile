@@ -3,19 +3,27 @@ FROM nginx:alpine as stage1
 
 RUN apk add certbot certbot-nginx
 RUN apk add python3 python3-dev py3-pip build-base libressl-dev musl-dev libffi-dev rust cargo
-RUN pip3 install pip --upgrade
-RUN pip3 install certbot-nginx
-RUN mkdir /etc/letsencrypt
+
+# Create a virtual environment
+WORKDIR /app
+RUN python3 -m venv venv
+ENV VIRTUAL_ENV=/app/venv
+ENV PATH="/app/venv/bin:$PATH"
+
+# Activate the virtual environment and install dependencies
+RUN . venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install certbot-nginx
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY iq-dist-3.conf /etc/nginx/conf.d/iq-dist-3.conf
-
 
 # Stage 2: Create a minimal image with the compiled Nginx binary
 FROM nginx:alpine
 
 COPY --from=stage1 /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=stage1 /etc/nginx /etc/nginx
+COPY --from=stage1 /app/venv /app/venv
 
 EXPOSE 80 443
 
