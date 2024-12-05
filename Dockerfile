@@ -22,7 +22,7 @@ COPY iq-dist-3.conf /etc/nginx/conf.d/iq-dist-3.conf
 RUN mkdir -p /var/www/html
 
 # Obtain Let's Encrypt certificate
-RUN certbot certonly --webroot -w /var/www/html -d $DOMAIN_NAME --agree-tos --non-interactive --email $EMAIL
+RUN certbot certonly --webroot -w /var/www/html -d iq-dist-3.com --agree-tos --non-interactive --email stephen@incquery.com
 
 # Stage 2: Create a minimal image with the compiled Nginx binary
 FROM nginx:alpine
