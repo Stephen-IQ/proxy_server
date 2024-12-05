@@ -16,13 +16,13 @@ RUN . venv/bin/activate && \
     pip install certbot-nginx
 
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY iq-dist-3.conf /etc/nginx/conf.d/iq-dist-3.conf
+COPY iq-dist-4.conf /etc/nginx/conf.d/iq-dist-4.conf
 
 #Make directory to store certs
 RUN mkdir -p /var/www/html
 
 # Obtain Let's Encrypt certificate
-RUN certbot certonly --webroot -w /var/www/html -d iq-dist-4.com --agree-tos --non-interactive --email stephen@incquery.com
+#RUN certbot certonly --webroot -w /var/www/html -d iq-dist-4.com --agree-tos --non-interactive --email stephen@incquery.com
 
 # Stage 2: Create a minimal image with the compiled Nginx binary
 FROM nginx:alpine
@@ -30,7 +30,7 @@ FROM nginx:alpine
 COPY --from=stage1 /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=stage1 /etc/nginx /etc/nginx
 COPY --from=stage1 /app/venv /app/venv
-COPY --from=stage1 /etc/letsencrypt /etc/letsencrypt
+#COPY --from=stage1 /etc/letsencrypt /etc/letsencrypt
 
 EXPOSE 80 443
 
