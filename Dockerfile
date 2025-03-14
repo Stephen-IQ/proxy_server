@@ -9,8 +9,8 @@ COPY iq-dist-4.conf /etc/nginx/conf.d/iq-dist-4.conf
 RUN mkdir -p /var/www/html && \
     chmod -R 755 /var/www/html
 
-# Expose only HTTP since DigitalOcean will handle HTTPS
-EXPOSE 80
+
+EXPOSE 80 443
 
 # Use default Nginx command
 CMD ["nginx", "-g", "daemon off;"]
