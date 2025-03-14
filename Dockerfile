@@ -22,6 +22,7 @@ COPY iq-dist-4.conf /etc/nginx/conf.d/iq-dist-4.conf
 
 #Make directory to store certs
 RUN mkdir -p /var/www/html
+RUN mkdir -p /etc/letsencrypt/live/iq-dist-4.com
 
 # Obtain Let's Encrypt certificate
 RUN certbot --nginx -d iq-dist-4.com --agree-tos --non-interactive --email stephen@incquery.com
